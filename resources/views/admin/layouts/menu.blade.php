@@ -65,13 +65,7 @@
                         </ul>
                     </div>
                 </li>
-                <li class="nav-item {{ request()->is('magiamgia') ? 'active' : '' }}">
-                    <a href="{{ route('magiamgia') }}">
-                        <i class="fas fa-gift"></i>
-                        <p>Mã Giảm Giá Cũ</p>
-                    </a>
-                </li>
-                <li class="nav-item {{ request()->is('magiamgia') ? 'active' : '' }}">
+                <li class="nav-item {{ request()->is('coupon') ? 'active' : '' }}">
                     <a href="{{ route('coupon.index') }}">
                         <i class="fas fa-gift"></i>
                         <p>Mã Giảm Giá New</p>

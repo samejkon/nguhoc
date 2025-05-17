@@ -20,7 +20,7 @@
                         <div class="d-flex align-items-center">
                             <h4 class="card-title">Danh sách</h4>
                             <button class="btn btn-primary btn-round ml-auto" data-toggle="modal"
-                                data-target="#themMaGiamGia">
+                                data-target="#createCoupon">
                                 <i class="fa fa-plus"></i>
                                 &nbsp;Thêm Mã Giảm Giá
                             </button>
@@ -28,18 +28,19 @@
                     </div>
                     <div class="card-body">
                         <div class="card-body">
-                            @include('admin.layouts.themmagiamgia')
+                            @include('admin.coupon.create')
+                            @include('admin.coupon.edit')
                             <div class="table-responsive">
-                                <table id="add-row" class="display table table-striped table-hover">
+                                <table id="add-row" class="display table table-hover">
                                     <thead>
                                         <tr>
                                             <th width="10%">Mã</th>
                                             <th width="13%">Ngày bắt đầu</th>
                                             <th width="13%">Ngày kết thúc</th>
-                                            <th>Mô tả</th>
+                                            <th>Số vé</th>
                                             <th width="11%">Số đơn đã áp dụng</th>
-                                            <th width="10%">Trạng thái</th>
                                             <th width="12%">Số tiền giảm</th>
+                                            <th width="10%">Trạng thái</th>
                                             <th width="10%">Thao tác</th>
                                         </tr>
                                     </thead>
@@ -48,97 +49,50 @@
                                             <th>Mã</th>
                                             <th>Ngày bắt đầu</th>
                                             <th>Ngày kết thúc</th>
-                                            <th>Mô tả</th>
+                                            <th>Số vé</th>
                                             <th>Số đơn đã áp dụng</th>
-                                            <th>Trạng thái</th>
                                             <th>Số tiền giảm</th>
+                                            <th>Trạng thái</th>
                                             <th>Thao tác</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                        @if (!empty($danhSachMaGiamGia))
-                                            @foreach ($danhSachMaGiamGia as $maGiamGia)
-                                                {{-- la nguoidung --}}
-                                                <tr>
-                                                    <td>{{ $maGiamGia->id_discount }}</td>
-                                                    <td>{{ date('d/m/Y', strtotime($maGiamGia->start_date)) }}</td>
-                                                    <td>{{ date('d/m/Y', strtotime($maGiamGia->end_date)) }}</td>
-                                                    @php
-                                                        $moTa = $maGiamGia->describes;
-                                                        if (!empty($moTa)) {
-                                                            $soLuongKyTu = strlen($moTa);
-                                                            $tam = '';
-                                                            $demTu = 0;
-                                                            for ($j = 0; $j < $soLuongKyTu; $j++) {
-                                                                if ($moTa[$j] == ' ' && $demTu < 9) {
-                                                                    $demTu++;
-                                                                } elseif ($demTu == 9) {
-                                                                    $tam[$j] = '.';
-                                                                    $tam[$j + 1] = '.';
-                                                                    $tam[$j + 2] = '.';
-                                                                    break;
-                                                                }
-                                                                $tam[$j] = $moTa[$j];
-                                                            }
-                                                            $moTa = $tam;
-                                                            echo '<td class="cantrai" title="' .
-                                                                $maGiamGia->describes .
-                                                                '">' .
-                                                                $moTa .
-                                                                '</td>';
-                                                        } else {
-                                                            echo '<td></td>';
-                                                        }
-                                                    @endphp
+                                        @if (count($coupons) > 0)
+                                            @foreach ($coupons as $item)
+                                                <tr class="{{ $item->is_active == 1 ? '' : 'table-danger' }}">
+                                                    <td>{{ $item->code }}</td>
+                                                    <td>{{ $item->start_date->format('d/m/Y') }}</td>
+                                                    <td>{{ $item->end_date->format('d/m/Y') }}</td>
+                                                    <td>{{ $item->usage_limit }}</td>
+                                                    <td>{{ $item->used_count }}</td>
+                                                    <td>{{ $item->discount }}</td>
                                                     <td>
-                                                        @php
-                                                            $soDonDaApDung = 0;
-                                                        @endphp
-                                                        @if (!empty($danhSachPhieuXuat))
-                                                            @foreach ($danhSachPhieuXuat as $phieuXuat)
-                                                                @if ($phieuXuat->id_discount == $maGiamGia->id_discount)
-                                                                    @php
-                                                                        $soDonDaApDung++;
-                                                                    @endphp
-                                                                @endif
-                                                            @endforeach
-                                                        @endif
-                                                        {{ $soDonDaApDung }}
-                                                    </td>
-                                                    <td>
-                                                        @if (strtotime($maGiamGia->end_date) - strtotime(date('Y-m-d')) >= 0)
-                                                            <button type="button" class="btn btn-success btn-border"
-                                                                onclick='suaMaGiamGia({!! json_encode($maGiamGia) !!},false)'
-                                                                data-toggle="modal" title="Đổi trạng thái"
-                                                                data-original-title="Đổi trạng thái" style="width:99%;"
-                                                                data-target="#suaMaGiamGia">Còn hạn
-                                                            </button>
+                                                        @if ($item->is_active == 1)
+                                                            <span class="badge badge-success">Hoạt động</span>
                                                         @else
-                                                            <button type="button" class="btn btn-danger btn-border"
-                                                                onclick='suaMaGiamGia({!! json_encode($maGiamGia) !!},true)'
-                                                                data-toggle="modal" title="Đổi trạng thái"
-                                                                data-original-title="Đổi trạng thái" style="width:99%;"
-                                                                data-target="#suaMaGiamGia">Hết hạn
-                                                            </button>
+                                                            <span class="badge badge-danger">Khóa</span>
                                                         @endif
                                                     </td>
-                                                    <td class="canphai">
-                                                        {{ number_format($maGiamGia->reduced_price, 0, ',') }}
-                                                    </td>
                                                     <td>
-                                                        <div class="form-button-action">
-                                                            <button type="button" data-toggle="modal" title="Xóa"
-                                                                class="btn btn-link btn-danger" data-original-title="Xóa"
-                                                                onclick="xoaMaGiamGia('{{ $maGiamGia->id_discount }}','{{ $soDonDaApDung }}')"
-                                                                data-target="#xoaMaGiamGia">
-                                                                <i class="fa fa-times"></i>
+                                                        @if ($item->is_active == 1)
+                                                            <button class="btn btn-sm btn-warning editBtn"
+                                                                data-id="{{ $item->id }}"
+                                                                data-code="{{ $item->code }}"
+                                                                data-discount="{{ $item->discount }}"
+                                                                data-start_date="{{ $item->start_date->format('Y-m-d') }}"
+                                                                data-end_date="{{ $item->end_date->format('Y-m-d') }}"
+                                                                data-min_order_amount="{{ $item->min_order_amount }}"
+                                                                data-usage_limit="{{ $item->usage_limit }}"
+                                                                data-user_limit="{{ $item->user_limit }}"
+                                                                data-url="{{ route('coupon.update', $item->id) }}"
+                                                                data-toggle="modal" data-target="#editModal">
+                                                                Sửa
                                                             </button>
-                                                        </div>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @endforeach
-                                            @include('admin.layouts.suamagiamgia')
-                                            @include('admin.layouts.xoamagiamgia')
+
                                         @endif
                                     </tbody>
                                 </table>
@@ -149,4 +103,24 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#editModal').on('show.bs.modal', function(event) {
+                const button = $(event.relatedTarget); // dùng jQuery vì đang dùng Bootstrap 4
+                const modal = $(this);
+
+                // Gán giá trị vào các input
+                modal.find('#edit-code').val(button.data('code'));
+                modal.find('#edit-discount').val(button.data('discount'));
+                modal.find('#edit-start_date').val(button.data('start_date'));
+                modal.find('#edit-end_date').val(button.data('end_date'));
+                modal.find('#edit-min_order_amount').val(button.data('min_order_amount'));
+                modal.find('#edit-usage_limit').val(button.data('usage_limit'));
+                modal.find('#edit-user_limit').val(button.data('user_limit'));
+
+                // Gán action cho form
+                modal.find('#editForm').attr('action', button.data('url'));
+            });
+        });
+    </script>
 @endsection

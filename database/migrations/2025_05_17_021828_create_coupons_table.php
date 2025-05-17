@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();                     // Mã giảm giá
-            $table->decimal('value', 10, 2);                      // Giá trị giảm cố định (VD: 50.000đ)
+            $table->unsignedInteger('discount');                      // Giá trị giảm cố định (VD: 50.000đ)
             $table->decimal('min_order_amount', 10, 2)->nullable(); // Giá trị đơn hàng tối thiểu
 
             $table->unsignedInteger('usage_limit')->nullable();   // Tổng số lượt dùng toàn hệ thống
