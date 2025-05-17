@@ -16,7 +16,8 @@
                         <p>Tổng Quan</p>
                     </a>
                 </li>
-                <li class="nav-item {{ request()->is('laptop') || request()->is('phukien') || request()->is('hangsanxuat') ? 'active' : '' }}">
+                <li
+                    class="nav-item {{ request()->is('laptop') || request()->is('phukien') || request()->is('hangsanxuat') ? 'active' : '' }}">
                     <a data-toggle="collapse" href="#sanpham">
                         <i class="fas fa-store-alt"></i>
                         <p>Sản Phẩm</p>
@@ -42,7 +43,8 @@
                         </ul>
                     </div>
                 </li>
-                <li class="nav-item {{ request()->is('phieuxuat')||request()->is('phieunhap')||request()->is('themphieunhap')||request()->is('suaphieunhap')||request()->is('themphieuxuat')||request()->is('suaphieuxuat') ? 'active' : '' }}">
+                <li
+                    class="nav-item {{ request()->is('phieuxuat') || request()->is('phieunhap') || request()->is('themphieunhap') || request()->is('suaphieunhap') || request()->is('themphieuxuat') || request()->is('suaphieuxuat') ? 'active' : '' }}">
                     <a data-toggle="collapse" href="#giaodich">
                         <i class="fas fa-exchange-alt"></i>
                         <p>Giao Dịch</p>
@@ -66,7 +68,13 @@
                 <li class="nav-item {{ request()->is('magiamgia') ? 'active' : '' }}">
                     <a href="{{ route('magiamgia') }}">
                         <i class="fas fa-gift"></i>
-                        <p>Mã Giảm Giá</p>
+                        <p>Mã Giảm Giá Cũ</p>
+                    </a>
+                </li>
+                <li class="nav-item {{ request()->is('magiamgia') ? 'active' : '' }}">
+                    <a href="{{ route('coupon.index') }}">
+                        <i class="fas fa-gift"></i>
+                        <p>Mã Giảm Giá New</p>
                     </a>
                 </li>
                 <li class="nav-item {{ request()->is('nguoidung') ? 'active' : '' }}">

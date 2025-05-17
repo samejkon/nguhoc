@@ -8,6 +8,7 @@ use App\Http\Controllers\FrontEnd\TaiKhoanController;
 use App\Http\Controllers\FrontEnd\ThanhToanController;
 use App\Http\Controllers\FrontEnd\TrangChuController;
 use App\Http\Controllers\BackEnd\AdminController;
+use App\Http\Controllers\BackEnd\CouponController;
 use App\Http\Controllers\BackEnd\XulyHangsanxuat;
 use App\Http\Controllers\BackEnd\XulyLaptop;
 use App\Http\Controllers\BackEnd\XulyMagiamgia;
@@ -102,6 +103,9 @@ Route::namespace('BackEnd')->get('/suaphieuxuat', [AdminController::class, 'suap
 Route::namespace('BackEnd')->get('/magiamgia', [AdminController::class, 'magiamgia'])->name('magiamgia');
 Route::namespace('BackEnd')->post('/xulymagiamgia', [XulyMagiamgia::class, 'xulymagiamgia'])->name('xulymagiamgia');
 
+//Mã giảm giá
+Route::resource('/coupon', CouponController::class);
+
 
 Route::namespace('BackEnd')->get('/nguoidung', [AdminController::class, 'nguoidung'])->name('nguoidung');
 Route::namespace('BackEnd')->post('/xulynguoidung', [XulyNguoidung::class, 'xulynguoidung'])->name('xulynguoidung');
@@ -132,7 +136,7 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
-    return redirect()->route('/taikhoan');
+    return redirect('')->intended('/');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Illuminate\Http\Request $request) {

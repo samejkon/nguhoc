@@ -19,7 +19,7 @@
                             <div class="form-group form-group-default">
                                 <label style="font-size:12px !important;">Mã giảm giá (*)</label>
                                 <input name="maGiamGia" pattern="[A-Za-z0-9]{3,50}" type="text" class="form-control"
-                                title="(Gồm các ký tự là chữ thường, in hoa hoặc số, không dấu và không khoảng cách, tối đa 50 ký tự)"
+                                    title="(Gồm các ký tự là chữ thường, in hoa hoặc số, không dấu và không khoảng cách, tối đa 50 ký tự)"
                                     value="{{ old('maGiamGia') }}" required>
                                 @error('maGiamGia')
                                     <span style="color: red;font-size:10px">{{ $message }}</span>
@@ -39,9 +39,10 @@
                         <div class="col-md-6 pr-2">
                             <div class="form-group form-group-default">
                                 <label style="font-size:12px !important;">Ngày bắt đầu (*)</label>
-                                <input type="date" class="form-control" id="ngayBatDau" onblur="chinhNgay(this, 'ngayKetThuc')"
-                                name="ngayBatDau" value="{{ !empty(old('ngayBatDau')) ? old('ngayBatDau') : date("Y-m-d")}}"
-                                min="{{date("Y-m-d")}}" required>
+                                <input type="date" class="form-control" id="ngayBatDau"
+                                    onblur="chinhNgay(this, 'ngayKetThuc')" name="ngayBatDau"
+                                    value="{{ !empty(old('ngayBatDau')) ? old('ngayBatDau') : date('Y-m-d') }}"
+                                    min="{{ date('Y-m-d') }}" required>
                                 @error('ngayBatDau')
                                     <span style="color: red;font-size:10px">{{ $message }}</span>
                                 @enderror
@@ -50,9 +51,9 @@
                         <div class="col-md-6 pl-2">
                             <div class="form-group form-group-default">
                                 <label style="font-size:12px !important;">Ngày kết thúc (*)</label>
-                                <input type="date" class="form-control" id="ngayKetThuc"
-                                name="ngayKetThuc" value="{{ !empty(old('ngayKetThuc')) ? old('ngayKetThuc') : date("Y-m-d")}}"
-                                min="{{date("Y-m-d")}}" required>
+                                <input type="date" class="form-control" id="ngayKetThuc" name="ngayKetThuc"
+                                    value="{{ !empty(old('ngayKetThuc')) ? old('ngayKetThuc') : date('Y-m-d') }}"
+                                    min="{{ date('Y-m-d') }}" required>
                                 @error('ngayKetThuc')
                                     <span style="color: red;font-size:10px">{{ $message }}</span>
                                 @enderror
