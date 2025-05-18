@@ -63,22 +63,24 @@ class TaiKhoanController extends Controller
     }
     public function taikhoan()
     {
-        if (!Auth::check()) {
-            return redirect()->route('login');
+        if (!auth()->check()) {
+            return redirect()->route('dangnhap');
         }
-        $danhSachPhieuXuat = $this->phieuXuat->layDanhSachPhieuXuatTheoBoLoc([['id_users', '=', Auth::user()->id_users]]);
-        $danhSachSanPham = $this->sanPham->layDanhSachSanPham();
-        $danhSachMaGiamGia = $this->maGiamGia->layDanhSachMaGiamGia();
-        $danhSachThuVienHinh = $this->thuVienHinh->layDanhSachThuVienHinh();
-        $danhSachChiTietPhieuXuat = $this->chiTietPhieuXuat->layDanhSachChiTietPhieuXuat();
-        $danhSachHangSanXuat = $this->hangSanXuat->layDanhSachHangSanXuat();
+        $userId = auth()->user()->id_users;
+
+        // Lấy danh sách phiếu xuất của user hiện tại
+        $danhSachPhieuXuat = (new \App\Models\PhieuXuat)->layDanhSachPhieuXuatTheoBoLoc([['id_users', '=', $userId]]);
+        $danhSachChiTietPhieuXuat = (new \App\Models\ChiTietPhieuXuat)->layDanhSachChiTietPhieuXuat();
+        $danhSachSanPham = (new \App\Models\SanPham)->layDanhSachSanPham();
+        $danhSachMaGiamGia = (new \App\Models\MaGiamGia)->layDanhSachMaGiamGia();
+        $danhSachThuVienHinh = (new \App\Models\ThuVienHinh)->layDanhSachThuVienHinh();
+
         return view('user.taikhoan', compact(
             'danhSachPhieuXuat',
+            'danhSachChiTietPhieuXuat',
             'danhSachSanPham',
             'danhSachMaGiamGia',
-            'danhSachThuVienHinh',
-            'danhSachHangSanXuat',
-            'danhSachChiTietPhieuXuat'
+            'danhSachThuVienHinh'
         ));
     }
     public function dangxuat()

@@ -47,4 +47,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    public function coupons()
+    {
+        return $this->belongsToMany(\App\Models\Coupon::class, 'coupon_users', 'user_id', 'coupon_id')
+            ->withPivot('used_count')
+            ->withTimestamps();
+    }
 }

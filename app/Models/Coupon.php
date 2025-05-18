@@ -47,4 +47,8 @@ class Coupon extends Model
     {
         return $this->end_date && now()->greaterThan($this->end_date);
     }
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->withPivot('used_count')->withTimestamps();
+    }
 }
