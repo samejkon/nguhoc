@@ -17,7 +17,6 @@ class Coupon extends Model
         'end_date',
         'usage_limit',
         'user_limit',
-        'used_count',
         'is_active',
         'min_order_amount',
     ];
@@ -43,7 +42,7 @@ class Coupon extends Model
             }
         });
     }
-    
+
     public function expired()
     {
         return $this->end_date && now()->greaterThan($this->end_date);

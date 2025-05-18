@@ -1,5 +1,5 @@
 <!-- Modal them mau moi start-->
-<div class="modal fade bg-dark" id="createCoupon" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="createCoupon" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header no-bd">
@@ -66,3 +66,25 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const usageLimitInput = document.getElementById('usage_limit');
+        const userLimitInput = document.getElementById('user_limit');
+
+        function validateLimits() {
+            const usageLimit = parseInt(usageLimitInput.value) || 0;
+            const userLimit = parseInt(userLimitInput.value) || 0;
+
+            if (userLimit > usageLimit) {
+                userLimitInput.setCustomValidity(
+                    "Giới hạn mỗi tài khoản không được vượt quá tổng số mã giảm giá.");
+            } else {
+                userLimitInput.setCustomValidity("");
+            }
+        }
+
+        // Gọi kiểm tra khi người dùng thay đổi input
+        usageLimitInput.addEventListener('input', validateLimits);
+        userLimitInput.addEventListener('input', validateLimits);
+    });
+</script>

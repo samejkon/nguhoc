@@ -53,7 +53,7 @@ class CouponController extends Controller
         ]);
         //luu vao csdl
         $this->model->create($data);
-        return redirect()->route('admin.coupon.index')->with('success', 'Thêm mã giảm giá thành công.');
+        return redirect()->route('coupon.index')->with('success', 'Thêm mã giảm giá thành công.');
     }
 
     public function update(Request $request, $id)

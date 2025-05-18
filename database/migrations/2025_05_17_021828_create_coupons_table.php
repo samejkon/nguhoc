@@ -19,7 +19,6 @@ return new class extends Migration
 
             $table->unsignedInteger('usage_limit')->nullable();   // Tổng số lượt dùng toàn hệ thống
             $table->unsignedInteger('user_limit')->nullable();    // Số lượt dùng mỗi user
-            $table->unsignedInteger('used_count')->default(0);    // Tổng số lượt đã dùng
 
             $table->timestamp('start_date');                      // Ngày bắt đầu áp dụng (không nullable)
             $table->timestamp('end_date');                        // Ngày kết thúc (không nullable)
