@@ -42,7 +42,6 @@
                                                 @enderror
                                             </label>
                                             <input name="email" value="{{ old('email') }}"
-                                                pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                                                 title="(Gồm các ký tự chữ thường hoặc số, có chứa @, có chứa dấu . sau ký tự @, tối đa 150 ký tự)"
                                                 type="email" required>
                                         </p>
@@ -52,7 +51,7 @@
                                                     <span style="color: red;font-size:10px">{{ $message }}</span>
                                                 @enderror
                                             </label>
-                                            <input name="matKhau" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,32}"
+                                            <input name="matKhau" 
                                                 title="(Gồm các ký tự chữ thường, in hoa hoặc số, có chứa tối thiểu 1 ký tự thường, 1 ký tự in hoa và 1 ký tự số, từ 8-32 ký tự)"
                                                 type="password" required>
                                         </p>
@@ -77,7 +76,7 @@
                                     <form action="{{ route('xulygiohang') }}" method="post">
                                         <p class="checkout-coupon">
                                             <input id="coupon_code" class="input-text" name="maGiamGia"
-                                                pattern="[A-Za-z0-9]{3,50}" value="{{ old('maGiamGia') }}"
+                                                value="{{ old('maGiamGia') }}"
                                                 title="(Gồm các ký tự là chữ thường, in hoa hoặc số, không dấu và không khoảng cách, tối đa 50 ký tự)"
                                                 placeholder="Mã giảm giá" type="text" required>
                                             <input class="button ml-1 nutapdung" name="thaoTac" value="áp dụng"
@@ -120,7 +119,7 @@
                                             title="(Gồm các ký tự là chữ thường hoặc in hoa, có dấu hoặc không dấu, tối đa 50 ký tự)"
                                             name="hoTen"
                                             value="{{ auth()->check() && auth()->user()->roles != 2 ? auth()->user()->name_users : old('hoTen') }}"
-                                            pattern="[a-zỳọáầảấờễàạằệếýộậốũứĩõúữịỗìềểẩớặòùồợãụủíỹắẫựỉỏừỷởóéửỵẳẹèẽổẴẺỠƠÔƯĂÊÂĐA-ZỲỌÁẦẢẤỜỄÀẠẰỆẾÝỘẬỐŨỨĨÕÚỮỊỖÌỀỂẨỚẶÒÙỒỢÃỤỦÍỸẮẪỰỈỎỪỶỞÓÉỬỴẲẸÈẼỔẴẺỠƠÔƯĂÊÂĐ ]{3,50}"
+                                       
                                             type="text" required
                                             {{ auth()->check() && auth()->user()->roles != 2 ? 'disabled' : '' }}>
                                     </div>
@@ -134,7 +133,7 @@
                                         <input
                                             value="{{ auth()->check() && auth()->user()->roles != 2 ? auth()->user()->phone : old('soDienThoai') }}"
                                             title="(Gồm các ký tự là số, có bắt đầu là số 0, tối đa 9 chữ số - không bao gồm ký tự đầu là 0)"
-                                            name="soDienThoai" pattern="^[0]\d{9}$" type="text" required
+                                            name="soDienThoai"  type="text" required
                                             {{ auth()->check() && auth()->user()->roles != 2 ? 'disabled' : '' }}>
                                     </div>
                                 </div>
@@ -148,7 +147,6 @@
                                             value="{{ auth()->check() && auth()->user()->roles != 2 ? auth()->user()->address : old('diaChi') }}"
                                             title="(Gồm các ký tự là chữ thường, in hoa, số hoặc các ký tự như ,.-/ và tối đa 255 ký tự)"
                                             name="diaChi"
-                                            pattern="[a-zỳọáầảấờễàạằệếýộậốũứĩõúữịỗìềểẩớặòùồợãụủíỹắẫựỉỏừỷởóéửỵẳẹèẽổẴẺỠƠÔƯĂÊÂĐ0-9 -/,.]{3,255}"
                                             type="text" required
                                             {{ auth()->check() && auth()->user()->roles != 2 ? 'disabled' : '' }}>
                                     </div>
@@ -197,7 +195,6 @@
                                             @enderror
                                             <input class="mb-15" name="email" id="email"
                                                 value="{{ old('email') }}" disabled
-                                                pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                                                 title="(Gồm các ký tự chữ thường hoặc số, có chứa @, có chứa dấu . sau ký tự @, tối đa 150 ký tự)"
                                                 type="email">
                                             <label>Mật khẩu <span class="required">*</span></label>
@@ -205,7 +202,6 @@
                                                 <span style="color: red;font-size:10px">{{ $message }}</span>
                                             @enderror
                                             <input class="mb-15" id="matKhau" name="matKhau" disabled
-                                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,32}"
                                                 title="(Gồm các ký tự chữ thường, in hoa hoặc số, có chứa tối thiểu 1 ký tự thường, 1 ký tự in hoa và 1 ký tự số, từ 8-32 ký tự)"
                                                 type="password" required>
                                             <label>Nhập lại mật khẩu <span class="required">*</span></label>
@@ -213,7 +209,6 @@
                                                 <span style="color: red;font-size:10px">{{ $message }}</span>
                                             @enderror
                                             <input class="mb-15" name="nhapLaiMatKhau" id="nhapLaiMatKhau"
-                                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,32}" disabled
                                                 title="(Gồm các ký tự chữ thường, in hoa hoặc số, có chứa tối thiểu 1 ký tự thường, 1 ký tự in hoa và 1 ký tự số, từ 8-32 ký tự)"
                                                 type="password">
                                         </div>
@@ -222,15 +217,13 @@
                                     <input
                                         title="(Gồm các ký tự là chữ thường hoặc in hoa, có dấu hoặc không dấu, tối đa 50 ký tự)"
                                         name="hoTen" value="{{ auth()->user()->name_users }}"
-                                        pattern="[a-zỳọáầảấờễàạằệếýộậốũứĩõúữịỗìềểẩớặòùồợãụủíỹắẫựỉỏừỷởóéửỵẳẹèẽổẴẺỠƠÔƯĂÊÂĐA-ZỲỌÁẦẢẤỜỄÀẠẰỆẾÝỘẬỐŨỨĨÕÚỮỊỖÌỀỂẨỚẶÒÙỒỢÃỤỦÍỸẮẪỰỈỎỪỶỞÓÉỬỴẲẸÈẼỔẴẺỠƠÔƯĂÊÂĐ ]{3,50}"
                                         type="text" required hidden>
                                     <input value="{{ auth()->user()->phone }}"
                                         title="(Gồm các ký tự là số, có bắt đầu là số 0, tối đa 9 chữ số - không bao gồm ký tự đầu là 0)"
-                                        name="soDienThoai" pattern="^[0]\d{9}$" type="text" required hidden>
+                                        name="soDienThoai" type="text" required hidden>
                                     <input value="{{ auth()->user()->address }}"
                                         title="(Gồm các ký tự là chữ thường, in hoa, số hoặc các ký tự như ,.-/ và tối đa 255 ký tự)"
                                         name="diaChi"
-                                        pattern="[a-zỳọáầảấờễàạằệếýộậốũứĩõúữịỗìềểẩớặòùồợãụủíỹắẫựỉỏừỷởóéửỵẳẹèẽổẴẺỠƠÔƯĂÊÂĐ0-9 -/,.]{3,255}"
                                         type="text" required hidden>
                                 @endif
                             </div>
@@ -251,7 +244,6 @@
                                                 title="(Gồm các ký tự là chữ thường hoặc in hoa, có dấu hoặc không dấu, tối đa 50 ký tự)"
                                                 name="hoTenNguoiNhan" id="hoTenNguoiNhan"
                                                 value="{{ old('hoTenNguoiNhan') }}" disabled
-                                                pattern="[a-zỳọáầảấờễàạằệếýộậốũứĩõúữịỗìềểẩớặòùồợãụủíỹắẫựỉỏừỷởóéửỵẳẹèẽổẴẺỠƠÔƯĂÊÂĐA-ZỲỌÁẦẢẤỜỄÀẠẰỆẾÝỘẬỐŨỨĨÕÚỮỊỖÌỀỂẨỚẶÒÙỒỢÃỤỦÍỸẮẪỰỈỎỪỶỞÓÉỬỴẲẸÈẼỔẴẺỠƠÔƯĂÊÂĐ ]{3,50}"
                                                 type="text">
                                         </div>
                                     </div>
@@ -264,7 +256,6 @@
                                             <input
                                                 title="(Gồm các ký tự là số, có bắt đầu là số 0, tối đa 9 chữ số - không bao gồm ký tự đầu là 0)"
                                                 name="soDienThoaiNguoiNhan" id="soDienThoaiNguoiNhan" disabled
-                                                value="{{ old('soDienThoaiNguoiNhan') }}" pattern="^[0]\d{9}$"
                                                 type="text">
                                         </div>
                                     </div>
@@ -278,7 +269,6 @@
                                                 title="(Gồm các ký tự là chữ thường, in hoa, số hoặc các ký tự như ,.-/ và tối đa 255 ký tự)"
                                                 name="diaChiNguoiNhan" id="diaChiNguoiNhan"
                                                 value="{{ old('diaChiNguoiNhan') }}" disabled
-                                                pattern="[a-zỳọáầảấờễàạằệếýộậốũứĩõúữịỗìềểẩớặòùồợãụủíỹắẫựỉỏừỷởóéửỵẳẹèẽổẴẺỠƠÔƯĂÊÂĐ0-9 -/,.]{3,255}"
                                                 type="text">
                                         </div>
                                     </div>
@@ -486,7 +476,8 @@
             const canThanhToanEl = document.getElementById('canThanhToan');
             const tongTienInput = document.getElementById('tongTienInput');
 
-            const tongTien = parseInt(tongTienEl.textContent.replace(/[^0-9]/g, '')) || 0;
+            // Lấy giá trị chuỗi, không ép kiểu
+            const tongTien = tongTienEl.textContent.replace(/[^0-9]/g, '') || '0';
 
             fetch('/ap-dung-ma-giam-gia', {
                     method: 'POST',
@@ -496,23 +487,26 @@
                             'content')
                     },
                     body: JSON.stringify({
-                        coupon
+                        coupon,
+                        order_total: tongTien // truyền chuỗi lên server
                     })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        const discount = parseInt(data.discount) || 0;
-                        giamGiaEl.textContent = '-' + discount.toLocaleString('vi-VN') + 'đ';
-                        canThanhToanEl.textContent = (tongTien - discount).toLocaleString('vi-VN') + 'đ';
-                        tongTienInput.value = tongTien - discount;
+                        // discount là chuỗi, chỉ ép kiểu khi hiển thị lại
+                        const discount = data.discount || '0';
+                        giamGiaEl.textContent = '-' + Number(discount).toLocaleString('vi-VN') + 'đ';
+                        canThanhToanEl.textContent = (Number(tongTien) - Number(discount)).toLocaleString(
+                            'vi-VN') + 'đ';
+                        tongTienInput.value = Number(tongTien) - Number(discount);
 
                         messageEl.textContent = data.message;
                         messageEl.classList.remove('text-danger');
                         messageEl.classList.add('text-success');
                     } else {
                         giamGiaEl.textContent = '-0đ';
-                        canThanhToanEl.textContent = tongTien.toLocaleString('vi-VN') + 'đ';
+                        canThanhToanEl.textContent = Number(tongTien).toLocaleString('vi-VN') + 'đ';
                         tongTienInput.value = tongTien;
 
                         messageEl.textContent = data.message || 'Mã giảm giá không hợp lệ.';
@@ -523,7 +517,7 @@
                 .catch(error => {
                     console.error('Lỗi khi áp dụng mã:', error);
                     giamGiaEl.textContent = '-0đ';
-                    canThanhToanEl.textContent = tongTien.toLocaleString('vi-VN') + 'đ';
+                    canThanhToanEl.textContent = Number(tongTien).toLocaleString('vi-VN') + 'đ';
                     tongTienInput.value = tongTien;
 
                     messageEl.textContent = 'Có lỗi xảy ra. Vui lòng thử lại sau.';

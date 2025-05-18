@@ -47,15 +47,19 @@ Route::group(['namespace' => 'FrontEnd'], function () {
 
     Route::middleware('auth')->group(function () {
         Route::get('dangxuat', [TaiKhoanController::class, 'dangxuat'])->name('dangxuat');
-        Route::get('taikhoan', [TaiKhoanController::class, 'taikhoan'])->name('taikhoan');
-        Route::get('giohang', [TrangChuController::class, 'giohang'])->name('giohang');
-        Route::get('yeuthich', [TrangChuController::class, 'yeuthich'])->name('yeuthich');
-        Route::get('thanhtoan', [ThanhToanController::class, 'thanhtoan'])->name('thanhtoan');
 
-        Route::post('xulygiohang', [GioHangController::class, 'xulygiohang'])->name('xulygiohang');
-        Route::post('ap-dung-ma-giam-gia', [GioHangController::class, 'applyCoupon'])->name('apply.coupon');
-        Route::post('xulythanhtoan', [ThanhToanController::class, 'xulythanhtoan'])->name('xulythanhtoan');
-        Route::post('ap-dung-ma-giam-gia', [ThanhToanController::class, 'applyCoupon'])->name('apply.coupon');
+        // Các route cần xác thực email
+        Route::middleware('verified')->group(function () {
+            Route::get('taikhoan', [TaiKhoanController::class, 'taikhoan'])->name('taikhoan');
+            Route::get('giohang', [TrangChuController::class, 'giohang'])->name('giohang');
+            Route::get('yeuthich', [TrangChuController::class, 'yeuthich'])->name('yeuthich');
+            Route::get('thanhtoan', [ThanhToanController::class, 'thanhtoan'])->name('thanhtoan');
+
+            Route::post('xulygiohang', [GioHangController::class, 'xulygiohang'])->name('xulygiohang');
+            Route::post('ap-dung-ma-giam-gia', [GioHangController::class, 'applyCoupon'])->name('apply.coupon');
+            Route::post('xulythanhtoan', [ThanhToanController::class, 'xulythanhtoan'])->name('xulythanhtoan');
+            Route::post('ap-dung-ma-giam-gia', [ThanhToanController::class, 'applyCoupon'])->name('apply.coupon');
+        });
     });
 });
 

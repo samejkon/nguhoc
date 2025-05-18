@@ -112,6 +112,79 @@
                 </div>
             </div>
         </div>
+        <!-- Thống kê khách hàng -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card card-stats card-primary card-round shadow">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4"><i class="fas fa-users fa-2x text-primary"></i></div>
+                            <div class="col-8">
+                                <div class="numbers">
+                                    <p class="card-category">Tổng khách hàng</p>
+                                    <h4 class="card-title">{{ $tongKhachHang }}</h4>
+                                    <small>Hôm nay: {{ $khachMoiHomNay }} | Tuần: {{ $khachMoiTuan }} | Tháng:
+                                        {{ $khachMoiThang }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Thống kê sản phẩm -->
+            <div class="col-md-3">
+                <div class="card card-stats card-info card-round shadow">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4"><i class="fas fa-boxes fa-2x text-info"></i></div>
+                            <div class="col-8">
+                                <div class="numbers">
+                                    <p class="card-category">Tổng sản phẩm</p>
+                                    <h4 class="card-title">{{ $tongSanPham }}</h4>
+                                    <small>Sắp hết: {{ count($sanPhamSapHet ?? []) }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Thống kê đơn hàng -->
+            <div class="col-md-3">
+                <div class="card card-stats card-success card-round shadow">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4"><i class="fas fa-file-invoice-dollar fa-2x text-success"></i></div>
+                            <div class="col-8">
+                                <div class="numbers">
+                                    <p class="card-category">Tổng đơn hàng</p>
+                                    <h4 class="card-title">{{ $tongDonHang }}</h4>
+                                    <small>Hôm nay: {{ $donMoiNgay }} | Tuần: {{ $donMoiTuan }} | Tháng:
+                                        {{ $donMoiThang }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Thống kê doanh thu -->
+            <div class="col-md-3">
+                <div class="card card-stats card-warning card-round shadow">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4"><i class="fas fa-coins fa-2x text-warning"></i></div>
+                            <div class="col-8">
+                                <div class="numbers">
+                                    <p class="card-category">Doanh thu</p>
+                                    <h4 class="card-title">{{ number_format($doanhThuTong) }}đ</h4>
+                                    <small>Hôm nay: {{ number_format($doanhThuHomNay) }}đ | Tháng:
+                                        {{ number_format($doanhThuThang) }}đ</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             {{-- <div class="col-md-4">
                 <div class="card">
@@ -159,7 +232,7 @@
                             <div class="card-tools">
                                 <ul class="nav nav-pills nav-primary nav-pills-no-bd nav-sm">
                                     <li class="nav-item submenu">
-                                        <a class="nav-link {{ count($danhSachLoiPhanHoiChuaDoc) > 0 ? 'active show' : '' }}"
+                                        <a class="nav-link {{ isset($danhSachLoiPhanHoiChuaDoc) && count($danhSachLoiPhanHoiChuaDoc ?? []) > 0 ? 'active show' : '' }}"
                                             href="{{ url('tongquan?thaotac=doitrangthaitatca') }}"><i
                                                 class="fa fa-check"></i>&nbsp;&nbsp;&nbsp;Đã đọc tất cả</a>
                                     </li>
@@ -217,75 +290,108 @@
                 </div>
             </div>
         </div>
+        <div class="row mt-4">
+            <!-- Biểu đồ đường doanh thu -->
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header"><b>Doanh thu 7 ngày gần nhất</b></div>
+                    <div class="card-body">
+                        <canvas id="doanhThuLineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!-- Biểu đồ cột số lượng đơn hàng -->
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header"><b>Đơn hàng 7 ngày gần nhất</b></div>
+                    <div class="card-body">
+                        <canvas id="donHangBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <!-- Biểu đồ tròn tỷ lệ đơn hàng -->
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header"><b>Tỷ lệ đơn hàng theo trạng thái</b></div>
+                    <div class="card-body">
+                        <canvas id="trangThaiPieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!-- Top 5 sản phẩm bán chạy -->
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header"><b>Top 5 sản phẩm bán chạy</b></div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Số lượng bán</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($topSanPhamBanChay as $i => $sp)
+                                    <tr>
+                                        <td>{{ $i + 1 }}</td>
+                                        <td>{{ $sp->id_products }}</td>
+                                        <td>{{ $sp->so_luong }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 @section('js')
-    {{-- thêm js --}}
-    @if (!empty(session('hoTenNhanVien')))
-        <script>
-            //Notify
-            $.notify({
-                icon: 'flaticon-alarm-1',
-                title: 'Vi Tính Shop',
-                message: "Xin chào {{ session('hoTenNhanVien') }}",
-            }, {
-                type: 'info',
-                placement: {
-                    from: "bottom",
-                    align: "right"
-                },
-                time: 600,
-            });
-        </script>
-    @endif
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        var barChart = document.getElementById('barChart').getContext('2d');
-        var doanhThuTuanNay = {!! json_encode($doanhThuTuanNay) !!};
-        var myBarChart = new Chart(barChart, {
+        // Biểu đồ đường doanh thu
+        var doanhThuData = {!! json_encode($doanhThu7Ngay) !!};
+        var doanhThuLine = new Chart(document.getElementById('doanhThuLineChart'), {
+            type: 'line',
+            data: {
+                labels: doanhThuData.map(e => e.ngay),
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: doanhThuData.map(e => e.doanhthu),
+                    borderColor: 'rgb(23, 125, 255)',
+                    backgroundColor: 'rgba(23, 125, 255, 0.2)',
+                    fill: true,
+                }]
+            }
+        });
+
+        // Biểu đồ cột số lượng đơn hàng
+        var donHangData = {!! json_encode($donHang7Ngay) !!};
+        var donHangBar = new Chart(document.getElementById('donHangBarChart'), {
             type: 'bar',
             data: {
-                labels: ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"],
+                labels: donHangData.map(e => e.ngay),
                 datasets: [{
-                    label: "Doanh thu",
-                    backgroundColor: 'rgb(23, 125, 255)',
-                    borderColor: 'rgb(23, 125, 255)',
-                    data: [doanhThuTuanNay[0].doanhthu, doanhThuTuanNay[1].doanhthu, doanhThuTuanNay[2]
-                        .doanhthu, doanhThuTuanNay[3].doanhthu,
-                        doanhThuTuanNay[4].doanhthu, doanhThuTuanNay[5].doanhthu, doanhThuTuanNay[6]
-                        .doanhthu
-                    ],
-                }],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            callback: function(label, index, labels) {
-                                if (label < 1000000000000 && label >= 1000000000) return label /
-                                    1000000000 + ' tỷ';
-                                if (label < 1000000000 && label >= 1000000) return label / 1000000 +
-                                    ' triệu';
-                                if (label < 1000000 && label >= 1000) return label / 1000 + ' ngìn';
-                                if (label <= 1 && label > 0) return label * 10;
-                                return label;
-                            }
-                        }
-                    }]
-                },
-                tooltips: {
-                    callbacks: {
-                        label: function(tooltipItem) {
-                            var doanhThu = new Intl.NumberFormat('vi-VN', {
-                                style: 'currency',
-                                currency: 'VND'
-                            }).format(Number(tooltipItem.yLabel));
-                            return " " + doanhThu;
-                        }
-                    }
-                },
+                    label: 'Đơn hàng',
+                    data: donHangData.map(e => e.so_luong),
+                    backgroundColor: 'rgb(255, 193, 7)'
+                }]
+            }
+        });
+
+        // Biểu đồ tròn tỷ lệ đơn hàng
+        var trangThaiData = {!! json_encode($trangThaiDon) !!};
+        var pie = new Chart(document.getElementById('trangThaiPieChart'), {
+            type: 'pie',
+            data: {
+                labels: Object.keys(trangThaiData),
+                datasets: [{
+                    data: Object.values(trangThaiData),
+                    backgroundColor: ['#007bff', '#ffc107', '#28a745', '#dc3545']
+                }]
             }
         });
     </script>

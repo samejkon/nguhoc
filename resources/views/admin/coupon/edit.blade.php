@@ -45,7 +45,7 @@
                         <div class="col-6">
                             <label for="min_order_amount">Điều kiện đơn hàng</label>
                             <input type="number" name="min_order_amount" id="edit-min_order_amount"
-                                class="form-control" min="0" step="any" required>
+                                class="form-control" min="0">
                         </div>
                     </div>
 

@@ -10,6 +10,8 @@ class PhieuXuat extends Model
 {
     use HasFactory;
     protected $table = 'invoice';
+    protected $primaryKey = 'id_invoice';
+    public $timestamps = false;
     public function layDanhSachPhieuXuat()
     {
         $danhSachPhieuXuat = DB::select('SELECT * FROM invoice ORDER BY id_invoice DESC');

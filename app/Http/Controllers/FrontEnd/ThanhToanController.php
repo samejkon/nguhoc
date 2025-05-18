@@ -177,7 +177,13 @@ class ThanhToanController extends Controller
                 }
             }
             $ngayTao = date("Y-m-d H:i:s");
-            $thongTinNguoiDung = $this->nguoiDung->timNguoiDungTheoSoDienThoai($request->soDienThoai); //tim nguoi dung da ton tai hay chua
+            if (auth()->check()) {
+                // Nếu đã đăng nhập, luôn lấy user đang đăng nhập
+                $thongTinNguoiDung = auth()->user();
+            } else {
+                // Nếu chưa đăng nhập, mới tìm theo số điện thoại
+                $thongTinNguoiDung = $this->nguoiDung->timNguoiDungTheoSoDienThoai($request->soDienThoai);
+            }
             if (!empty($thongTinNguoiDung)) { //neu tim thay
                 // Nếu là array
                 $status = is_array($thongTinNguoiDung) ? $thongTinNguoiDung['status'] : $thongTinNguoiDung->status;
@@ -398,7 +404,7 @@ class ThanhToanController extends Controller
                     if ($pivot) {
                         DB::table('coupon_users')
                             ->where('id', $pivot->id)
-                            ->update(['used_count' => $pivot->used_count + 1]);
+                            ->update(['used_count' => $pivot->used_count + 1, 'updated_at' => now()]);
                     } else {
                         DB::table('coupon_users')->insert([
                             'user_id' => $user->id_users,
@@ -407,6 +413,13 @@ class ThanhToanController extends Controller
                             'created_at' => now(),
                             'updated_at' => now()
                         ]);
+                    }
+                    // Kiểm tra tổng số lượt sử dụng để tự động hủy kích hoạt mã
+                    $totalUsed = DB::table('coupon_users')
+                        ->where('coupon_id', $coupon->id)
+                        ->sum('used_count');
+                    if ($coupon->usage_limit && $totalUsed >= $coupon->usage_limit) {
+                        \App\Models\Coupon::where('id', $coupon->id)->update(['is_active' => false]);
                     }
                 }
                 session()->forget('coupon');
@@ -420,7 +433,9 @@ class ThanhToanController extends Controller
     public function applyCoupon(Request $request)
     {
         $couponCode = $request->input('coupon');
-        $coupon = Coupon::where('code', $couponCode)->first();
+        $orderTotal = $request->input('order_total');
+
+        $coupon = \App\Models\Coupon::where('code', $couponCode)->first();
 
         if (!$coupon) {
             session()->forget('coupon');
@@ -428,6 +443,31 @@ class ThanhToanController extends Controller
                 'success' => false,
                 'message' => 'Mã giảm giá không hợp lệ.'
             ], 404);
+        }
+
+        if (!$coupon->is_active) {
+            session()->forget('coupon');
+            return response()->json([
+                'success' => false,
+                'message' => 'Mã giảm giá không còn hoạt động.'
+            ], 403);
+        }
+
+        $now = now();
+        if ($now->lt($coupon->start_date) || $now->gt($coupon->end_date)) {
+            session()->forget('coupon');
+            return response()->json([
+                'success' => false,
+                'message' => 'Mã giảm giá đã hết hạn hoặc chưa đến thời gian sử dụng.'
+            ], 403);
+        }
+
+        if ($orderTotal < $coupon->min_order_amount) {
+            session()->forget('coupon');
+            return response()->json([
+                'success' => false,
+                'message' => 'Đơn hàng chưa đạt giá trị tối thiểu để áp dụng mã giảm giá.'
+            ], 403);
         }
 
         if (!auth()->check()) {
@@ -439,21 +479,36 @@ class ThanhToanController extends Controller
 
         $user = auth()->user();
 
-        // Lấy bản ghi coupon_users nếu có
+        // Kiểm tra số lượt sử dụng của user
         $pivot = DB::table('coupon_users')
             ->where('user_id', $user->id_users)
             ->where('coupon_id', $coupon->id)
             ->first();
 
-        $maxUse = $coupon->user_limit ?? 1;
-
-        if ($pivot && $pivot->used_count >= $maxUse) {
+        $userLimit = $coupon->user_limit ?? 1;
+        if ($pivot && $pivot->used_count >= $userLimit) {
             return response()->json([
                 'success' => false,
                 'message' => 'Bạn đã sử dụng hết số lần cho phép của mã này.'
             ], 403);
         }
 
+        // Kiểm tra tổng số lượt sử dụng
+        $totalUsed = DB::table('coupon_users')
+            ->where('coupon_id', $coupon->id)
+            ->sum('used_count');
+        if ($coupon->usage_limit && $totalUsed >= $coupon->usage_limit) {
+            // Tự động hủy kích hoạt mã
+            $coupon->is_active = false;
+            $coupon->save();
+            session()->forget('coupon');
+            return response()->json([
+                'success' => false,
+                'message' => 'Mã giảm giá đã hết lượt sử dụng.'
+            ], 403);
+        }
+
+        // Lưu vào session
         session(['coupon' => $coupon]);
         return response()->json([
             'success' => true,

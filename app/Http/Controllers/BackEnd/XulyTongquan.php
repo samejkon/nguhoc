@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\BackEnd;
+
 use App\Http\Controllers\Controller;
 use App\Models\SanPham;
 use App\Models\ThuVienHinh;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
 use PDF;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class XulyTongquan extends Controller
 {
@@ -58,72 +60,104 @@ class XulyTongquan extends Controller
         if (!Auth::check() || Auth::user()->roles != 2) {
             return redirect()->route('login');
         }
-        $danhSachSanPham = $this->sanPham->layDanhSachSanPham();
-        $soLuongLaptop = 0;
-        $soLuongPhuKien = 0;
-        foreach ($danhSachSanPham as $sanpham) {
-            if ($sanpham->cat_products == 0) { // la laptop
-                $soLuongLaptop += $sanpham->qty;
-            }
-            if ($sanpham->cat_products == 1) { // la phu kien
-                $soLuongPhuKien += $sanpham->qty;
-            }
+
+        // Thống kê khách hàng
+        $tongKhachHang = $this->nguoiDung->count();
+        $khachMoiHomNay = $this->nguoiDung->whereDate('date_created', now()->toDateString())->count();
+        $khachMoiTuan = $this->nguoiDung->whereBetween('date_created', [now()->startOfWeek(), now()->endOfWeek()])->count();
+        $khachMoiThang = $this->nguoiDung->whereMonth('date_created', now()->month)->count();
+        $topKhachHang = DB::table('invoice')
+            ->select('id_users', DB::raw('COUNT(*) as so_don'), DB::raw('SUM(total_money) as tong_tien'))
+            ->groupBy('id_users')
+            ->orderByDesc('tong_tien')
+            ->limit(5)
+            ->get();
+
+        // Thống kê sản phẩm
+        $tongSanPham = $this->sanPham->count();
+        $sanPhamSapHet = $this->sanPham->where('qty', '<', 10)->get();
+        $topSanPhamBanChay = \DB::table('invoice_details')
+            ->select('id_products', \DB::raw('SUM(qty) as so_luong'))
+            ->groupBy('id_products')
+            ->orderByDesc('so_luong')
+            ->limit(5)
+            ->get();
+
+        $sanPhamItBan = \DB::table('invoice_details')
+            ->select('id_products', \DB::raw('SUM(qty) as so_luong'))
+            ->groupBy('id_products')
+            ->orderBy('so_luong')
+            ->limit(5)
+            ->get();
+
+        // Thống kê đơn hàng
+        $tongDonHang = $this->phieuXuat->count();
+        $donChoXacNhan = $this->phieuXuat->where('delivery_status', 1)->count();
+        $donDangGiao = $this->phieuXuat->where('delivery_status', 3)->count();
+        $donHoanThanh = $this->phieuXuat->where('delivery_status', 4)->count();
+        $donHuy = $this->phieuXuat->where('delivery_status', 0)->count();
+        $doanhThuHomNay = $this->phieuXuat->whereDate('date_created', now()->toDateString())->sum('total_money');
+        $doanhThuThang = $this->phieuXuat->whereMonth('date_created', now()->month)->sum('total_money');
+        $doanhThuTong = $this->phieuXuat->sum('total_money');
+        $donMoiNgay = $this->phieuXuat->whereDate('date_created', now()->toDateString())->count();
+        $donMoiTuan = $this->phieuXuat->whereBetween('date_created', [now()->startOfWeek(), now()->endOfWeek()])->count();
+        $donMoiThang = $this->phieuXuat->whereMonth('date_created', now()->month)->count();
+        $tyLeHoanThanh = $tongDonHang > 0 ? round($donHoanThanh / $tongDonHang * 100, 2) : 0;
+
+        // Dữ liệu biểu đồ (ví dụ: doanh thu 7 ngày gần nhất)
+        $doanhThu7Ngay = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $ngay = now()->subDays($i)->toDateString();
+            $doanhThu7Ngay[] = [
+                'ngay' => $ngay,
+                'doanhthu' => $this->phieuXuat->whereDate('date_created', $ngay)->sum('total_money')
+            ];
         }
-        $soLuongDonHang = count($this->phieuXuat->layDanhSachPhieuXuat());
-        $soLuongNguoiDung = count($this->nguoiDung->layDanhSachNguoiDung());
-        $danhSachPhieuXuatChoXacNhan = $this->phieuXuat->layDanhSachPhieuXuatTheoBoLoc([['invoice.delivery_status', '=', 1]]);
-        $danhSachLoiPhanHoiChuaDoc = $this->loiPhanHoi->layDanhSachLoiPhanHoiTheoBoLoc([['feedback.status', '=', 0]]);
-        $danhSachLoiPhanHoi = $this->loiPhanHoi->layDanhSachLoiPhanHoiTheoBoLoc(NULL);
-        $doanhThuTuanNay = $this->phieuXuat->doanhThuTuanNay();
-        if (isset($request->thaotac)) {
-            if ($request->thaotac == "doitrangthai") { // *******************************************************************************************doi trang thai loi phan hoi// loi nhan lien he
-                $rules = [
-                    'id_feedback' => 'required|integer|exists:feedback,id_feedback'
-                ];
-                $messages = [
-                    'required' => ':attribute bắt buộc nhập',
-                    'exists' => ':attribute không tồn tại',
-                    'integer' => ':attribute nhập sai'
-                ];
-                $attributes = [
-                    'id_feedback' => 'Mã lời phản hồi'
-                ];
-                $request->validate($rules, $messages, $attributes);
-                $thongTinLoiPhanHoi = $this->loiPhanHoi->timLoiPhanHoiTheoMa($request->id_feedback);
-                if ($thongTinLoiPhanHoi->status == 0) {
-                    $thongTinLoiPhanHoi->status = 1;
-                } elseif ($thongTinLoiPhanHoi->status == 1) {
-                    $thongTinLoiPhanHoi->status = 0;
-                }
-                $dataLoiPhanHoi = [
-                    $thongTinLoiPhanHoi->status
-                ];
-                $this->loiPhanHoi->doiTrangThaiLoiPhanHoi($dataLoiPhanHoi, $thongTinLoiPhanHoi->id_feedback);
-                return redirect('tongquan#loiphanhoi');
-            } elseif ($request->thaotac == "doitrangthaitatca" && !empty($danhSachLoiPhanHoi)) {
-                $this->loiPhanHoi->doiTrangThaiLoiPhanHoiTatCa();
-                return redirect('tongquan#loiphanhoi');
-            }
-            return back()->with(
-                'tieudethongbao',
-                'Thao tác thất bại'
-            )->with(
-                'thongbao',
-                'Vui lòng thử lại!'
-            )->with(
-                'loaithongbao',
-                'danger'
-            );
+        // Đơn hàng 7 ngày gần nhất
+        $donHang7Ngay = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $ngay = now()->subDays($i)->toDateString();
+            $donHang7Ngay[] = [
+                'ngay' => $ngay,
+                'so_luong' => $this->phieuXuat->whereDate('date_created', $ngay)->count()
+            ];
         }
+        // Tỷ lệ đơn hàng theo trạng thái
+        $trangThaiDon = [
+            'Chờ xác nhận' => $donChoXacNhan,
+            'Đang giao' => $donDangGiao,
+            'Hoàn thành' => $donHoanThanh,
+            'Đã huỷ' => $donHuy
+        ];
+
+        // ...giữ lại các biến cũ nếu cần...
+
         return view('admin.tongquan', compact(
-            'soLuongLaptop',
-            'soLuongPhuKien',
-            'soLuongDonHang',
-            'danhSachPhieuXuatChoXacNhan',
-            'danhSachLoiPhanHoiChuaDoc',
-            'danhSachLoiPhanHoi',
-            'doanhThuTuanNay',
-            'soLuongNguoiDung'
+            'tongKhachHang',
+            'khachMoiHomNay',
+            'khachMoiTuan',
+            'khachMoiThang',
+            'topKhachHang',
+            'tongSanPham',
+            'sanPhamSapHet',
+            'topSanPhamBanChay',
+            'sanPhamItBan',
+            'tongDonHang',
+            'donChoXacNhan',
+            'donDangGiao',
+            'donHoanThanh',
+            'donHuy',
+            'doanhThuHomNay',
+            'doanhThuThang',
+            'doanhThuTong',
+            'donMoiNgay',
+            'donMoiTuan',
+            'donMoiThang',
+            'tyLeHoanThanh',
+            'doanhThu7Ngay',
+            'donHang7Ngay',
+            'trangThaiDon'
+            // ...các biến khác...
         ));
     }
 }
