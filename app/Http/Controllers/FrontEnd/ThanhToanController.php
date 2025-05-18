@@ -387,6 +387,30 @@ class ThanhToanController extends Controller
                 ];
                 $this->chiTietPhieuXuat->themChiTietPhieuXuat($dataChiTietPhieuXuat); //them chi tiet phieu xuat vao database
             }
+            if (session('coupon')) {
+                $coupon = session('coupon');
+                $user = auth()->user();
+                if ($user && $coupon) {
+                    $pivot = DB::table('coupon_users')
+                        ->where('user_id', $user->id_users)
+                        ->where('coupon_id', $coupon->id)
+                        ->first();
+                    if ($pivot) {
+                        DB::table('coupon_users')
+                            ->where('id', $pivot->id)
+                            ->update(['used_count' => $pivot->used_count + 1]);
+                    } else {
+                        DB::table('coupon_users')->insert([
+                            'user_id' => $user->id_users,
+                            'coupon_id' => $coupon->id,
+                            'used_count' => 1,
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ]);
+                    }
+                }
+                session()->forget('coupon');
+            }
             session()->forget('gioHang');
             return redirect()->route('/')->with('thongbao', 'Đặt hàng thành công, sẽ có nhân viên liên hệ bạn để xác nhận trong 24h tới!');
         }
