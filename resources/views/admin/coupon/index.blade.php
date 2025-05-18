@@ -38,10 +38,8 @@
                                             <th width="13%">Ngày bắt đầu</th>
                                             <th width="13%">Ngày kết thúc</th>
                                             <th>Số vé</th>
-                                            <th width="11%">Số đơn đã áp dụng</th>
                                             <th width="12%">Số tiền giảm</th>
                                             <th width="10%">Trạng thái</th>
-                                            <th width="10%">Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -50,10 +48,8 @@
                                             <th>Ngày bắt đầu</th>
                                             <th>Ngày kết thúc</th>
                                             <th>Số vé</th>
-                                            <th>Số đơn đã áp dụng</th>
                                             <th>Số tiền giảm</th>
                                             <th>Trạng thái</th>
-                                            <th>Thao tác</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -64,7 +60,6 @@
                                                     <td>{{ $item->start_date->format('d/m/Y') }}</td>
                                                     <td>{{ $item->end_date->format('d/m/Y') }}</td>
                                                     <td>{{ $item->usage_limit }}</td>
-                                                    <td>{{ $item->used_count }}</td>
                                                     <td>{{ $item->discount }}</td>
                                                     <td>
                                                         @if ($item->is_active == 1)
@@ -73,7 +68,7 @@
                                                             <span class="badge badge-danger">Khóa</span>
                                                         @endif
                                                     </td>
-                                                    <td>
+                                                    {{-- <td>
                                                         @if ($item->is_active == 1)
                                                             <button class="btn btn-sm btn-warning editBtn"
                                                                 data-id="{{ $item->id }}"
@@ -89,7 +84,7 @@
                                                                 Sửa
                                                             </button>
                                                         @endif
-                                                    </td>
+                                                    </td> --}}
                                                 </tr>
                                             @endforeach
 
