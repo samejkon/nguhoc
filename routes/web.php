@@ -65,7 +65,7 @@ Route::group(['namespace' => 'FrontEnd'], function () {
 });
 
 // =========================== BACKEND ===========================
-Route::prefix('admin')->namespace('BackEnd')->group(function () {
+Route::prefix('admin')->namespace('BackEnd')->middleware('admin.role')->group(function () {
     Route::get('/tongquan', [XulyTongquan::class, 'tongquan'])->name('tongquan');
 
     Route::get('/laptop', [AdminController::class, 'laptop'])->name('laptop');
@@ -137,4 +137,9 @@ Route::middleware('auth')->group(function () {
         $request->user()->sendEmailVerificationNotification();
         return back()->with('message', 'Verification link sent!');
     })->middleware('throttle:6,1')->name('verification.send');
+});
+
+// Route fallback cho 404
+Route::fallback(function () {
+    return response()->view('404', [], 404);
 });
