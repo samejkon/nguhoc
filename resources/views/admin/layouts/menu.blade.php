@@ -10,7 +10,7 @@
                     </span>
                     <h4 class="text-section">Quản lý</h4>
                 </li>
-                <li class="nav-item {{ request()->is('tongquan') ? 'active' : '' }}">
+                <li class="nav-item {{ request()->is('admin/tongquan') ? 'active' : '' }}">
                     <a href="{{ route('tongquan') }}">
                         <i class="fas fa-chart-line"></i>
                         <p>Tổng Quan</p>
@@ -40,6 +40,7 @@
                                     <span class="sub-item">Hãng Sản Xuất</span>
                                 </a>
                             </li>
+
                         </ul>
                     </div>
                 </li>
@@ -71,10 +72,17 @@
                         <p>Mã Giảm Giá New</p>
                     </a>
                 </li>
-                <li class="nav-item {{ request()->is('nguoidung') ? 'active' : '' }}">
+                <li class="nav-item {{ request()->is('admin/nguoidung') ? 'active' : '' }}">
                     <a href="{{ route('nguoidung') }}">
                         <i class="fas fa-user"></i>
                         <p>Người Dùng</p>
+                    </a>
+                </li>
+
+                <li class="nav-item {{ request()->is('admin/feedback') ? 'active' : '' }}">
+                    <a href="{{ route('feedback.index') }}">
+                        <i class="fas fa-user"></i>
+                        <p>Phản hồi</p>
                     </a>
                 </li>
             </ul>

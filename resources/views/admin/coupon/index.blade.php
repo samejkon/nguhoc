@@ -40,6 +40,7 @@
                                             <th>Số vé</th>
                                             <th width="12%">Số tiền giảm</th>
                                             <th width="10%">Trạng thái</th>
+                                            <th>Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -50,6 +51,7 @@
                                             <th>Số vé</th>
                                             <th>Số tiền giảm</th>
                                             <th>Trạng thái</th>
+                                            <th>Thao tác</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -68,23 +70,18 @@
                                                             <span class="badge badge-danger">Khóa</span>
                                                         @endif
                                                     </td>
-                                                    {{-- <td>
+                                                    <td>
                                                         @if ($item->is_active == 1)
-                                                            <button class="btn btn-sm btn-warning editBtn"
-                                                                data-id="{{ $item->id }}"
-                                                                data-code="{{ $item->code }}"
-                                                                data-discount="{{ $item->discount }}"
-                                                                data-start_date="{{ $item->start_date->format('Y-m-d') }}"
-                                                                data-end_date="{{ $item->end_date->format('Y-m-d') }}"
-                                                                data-min_order_amount="{{ $item->min_order_amount }}"
-                                                                data-usage_limit="{{ $item->usage_limit }}"
-                                                                data-user_limit="{{ $item->user_limit }}"
-                                                                data-url="{{ route('coupon.update', $item->id) }}"
-                                                                data-toggle="modal" data-target="#editModal">
-                                                                Sửa
-                                                            </button>
+                                                            <form action="{{ route('coupon.lock', $item->id) }}"
+                                                                method="POST" style="display:inline;"
+                                                                class="lock-coupon-form">
+                                                                @csrf
+                                                                @method('PATCH')
+                                                                <button type="submit"
+                                                                    class="btn btn-sm btn-danger">Khóa</button>
+                                                            </form>
                                                         @endif
-                                                    </td> --}}
+                                                    </td>
                                                 </tr>
                                             @endforeach
 
@@ -98,24 +95,16 @@
             </div>
         </div>
     </div>
+
+@section('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            $('#editModal').on('show.bs.modal', function(event) {
-                const button = $(event.relatedTarget); // dùng jQuery vì đang dùng Bootstrap 4
-                const modal = $(this);
-
-                // Gán giá trị vào các input
-                modal.find('#edit-code').val(button.data('code'));
-                modal.find('#edit-discount').val(button.data('discount'));
-                modal.find('#edit-start_date').val(button.data('start_date'));
-                modal.find('#edit-end_date').val(button.data('end_date'));
-                modal.find('#edit-min_order_amount').val(button.data('min_order_amount'));
-                modal.find('#edit-usage_limit').val(button.data('usage_limit'));
-                modal.find('#edit-user_limit').val(button.data('user_limit'));
-
-                // Gán action cho form
-                modal.find('#editForm').attr('action', button.data('url'));
+        document.querySelectorAll('.lock-coupon-form').forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                if (!confirm('Bạn có chắc chắn muốn khóa mã giảm giá này?')) {
+                    e.preventDefault();
+                }
             });
         });
     </script>
+@endsection
 @endsection

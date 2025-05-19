@@ -96,4 +96,13 @@ class CouponController extends Controller
 
         return redirect()->route('coupon.index')->with('success', 'Cập nhật mã giảm giá thành công.');
     }
+
+    public function lock($id)
+    {
+        $coupon = $this->model->findOrFail($id);
+        $coupon->is_active = 0;
+        $coupon->save();
+
+        return redirect()->route('coupon.index')->with('success', 'Đã khóa mã giảm giá thành công.');
+    }
 }

@@ -20,7 +20,8 @@ use App\Http\Controllers\BackEnd\{
     XulyPhieunhap,
     XulyPhukien,
     XulySanpham,
-    XulyTongquan
+    XulyTongquan,
+    FeedBackController
 };
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -94,10 +95,15 @@ Route::prefix('admin')->namespace('BackEnd')->group(function () {
     Route::post('/xulynguoidung', [XulyNguoidung::class, 'xulynguoidung'])->name('xulynguoidung');
 
     Route::post('/xulysanpham', [XulySanpham::class, 'xulysanpham'])->name('xulysanpham');
+
+    // Feedback
+    Route::get('feedback', [FeedBackController::class, 'index'])->name('feedback.index');
+    Route::post('feedback/{id}/reply', [FeedBackController::class, 'reply'])->name('feedback.reply');
 });
 
 // Coupon
 Route::resource('/coupon', CouponController::class);
+Route::patch('admin/coupon/{id}/lock', [\App\Http\Controllers\BackEnd\CouponController::class, 'lock'])->name('coupon.lock');
 
 // ====================== Clear Cache (Debug Tool) ======================
 Route::get('/clear', function () {
