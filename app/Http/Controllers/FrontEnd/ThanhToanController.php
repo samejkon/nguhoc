@@ -262,7 +262,6 @@ class ThanhToanController extends Controller
                 }
             }
             $dataPhieuXuat = [
-                NULL, //maphieuxuat tu dong
                 $thongTinNguoiDung->name_users,    // hotennguoinhan,
                 $thongTinNguoiDung->phone,    // sodienthoainguoinhan,
                 $thongTinNguoiDung->address,    // diachinguoinhan,

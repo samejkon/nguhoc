@@ -36,17 +36,17 @@ class ChiTietPhieuXuat extends Model
     public function themChiTietPhieuXuat($data)
     {
         return DB::insert('INSERT INTO invoice_details (
-            id_invoice_details,
             id_invoice,
             id_products,
             guarantee,
             qty,
-            dongia) values (
+            dongia
+        ) VALUES (
             ?,
             ?,
             ?,
             ?,
-            ?,
-            ?)', $data);
+            ?
+        )', $data);
     }
 }

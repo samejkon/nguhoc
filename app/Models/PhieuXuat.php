@@ -108,7 +108,6 @@ class PhieuXuat extends Model
     public function themPhieuXuat($data)
     {
         return DB::insert('INSERT INTO invoice (
-            id_invoice,
             name_receiver,
             phone_receiver,
             address_receiver,
@@ -119,7 +118,8 @@ class PhieuXuat extends Model
             delivery_status,
             payments,
             debt,
-            date_created) values (
+            date_created
+        ) VALUES (
             ?,
             ?,
             ?,
@@ -130,8 +130,8 @@ class PhieuXuat extends Model
             ?,
             ?,
             ?,
-            ?,
-            ?)', $data);
+            ?
+        )', $data);
     }
     public function phieuXuatTheoId($id)
     {

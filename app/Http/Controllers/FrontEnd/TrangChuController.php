@@ -15,6 +15,8 @@ use App\Models\ChiTietPhieuXuat;
 use App\Models\MaGiamGia;
 use App\Models\LoiPhanHoi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class TrangChuController extends Controller
 {
@@ -173,7 +175,7 @@ class TrangChuController extends Controller
                     1, //trangthai 0 la bi khoa, 1 la dang hoat dong
                     0, //loainguoidung 0 là khách hàng, 1 là đối tác, 2 là nhân viên
                     NULL, //email
-                    NULL, //matkhau
+                    Hash::make(Str::random(8)), //matkhau mặc định random
                     $ngayTao
                 ];
                 $this->nguoiDung->themNguoiDung($dataNguoiDung); //them nguoi dung vao database
@@ -182,7 +184,7 @@ class TrangChuController extends Controller
             $dataLoiPhanHoi = [
                 $request->noiDung, //noidung,
                 0, //trangthai, 0 la chua doc // 1 la da doc
-                $thongTinNguoiDung->id_users, //manguoidung,
+                is_array($thongTinNguoiDung) ? $thongTinNguoiDung['id_users'] : $thongTinNguoiDung->id_users, //manguoidung,
                 $ngayTao //ngaytao
             ];
             $this->loiPhanHoi->themLoiPhanHoi($dataLoiPhanHoi); //them loi phan hoi vao database
