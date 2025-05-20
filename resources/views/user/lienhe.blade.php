@@ -5,8 +5,8 @@
 @section('head')
     {{-- thêm css --}}
     <style>
-        #checkout-mess{
-            line-height:17px;
+        #checkout-mess {
+            line-height: 17px;
             padding: 20px;
         }
     </style>
@@ -43,60 +43,57 @@
                     <h3 class="contact-page-title">Liên hệ với chúng tôi</h3>
                     <div class="contact-form">
                         <form action="{{ route('xulylienhe') }}" method="post">
-                            <div class="form-group">
-                                <label class="mb-0">Họ tên <span class="required">*</span></label>
-                                @error('hoTen')
-                                    <span style="color: red;font-size:10px">{{ $message }}</span>
-                                @enderror
-                                <input
-                                    title="(Gồm các ký tự là chữ thường hoặc in hoa, có dấu hoặc không dấu, tối đa 50 ký tự)"
-                                    name="hoTen"
-                                    value="{{ auth()->check() && auth()->user()->roles != 2 ? auth()->user()->name_users : old('hoTen') }}"
-                                    pattern="[a-zỳọáầảấờễàạằệếýộậốũứĩõúữịỗìềểẩớặòùồợãụủíỹắẫựỉỏừỷởóéửỵẳẹèẽổẵẻỡơôưăêâđA-ZỲỌÁẦẢẤỜỄÀẠẰỆẾÝỘẬỐŨỨĨÕÚỮỊỖÌỀỂẨỚẶÒÙỒỢÃỤỦÍỸẮẪỰỈỎỪỶỞÓÉỬỴẲẸÈẼỔẴẺỠƠÔƯĂÊÂĐ ]{3,50}"
-                                    type="text" required
-                                    {{ auth()->check() && auth()->user()->roles != 2 ? 'disabled' : '' }}>
-                            </div>
-                            <div class="form-group">
-                                <label class="mb-0">SĐT <span class="required">*</span></label>
-                                @error('soDienThoai')
-                                    <span style="color: red;font-size:10px">{{ $message }}</span>
-                                @enderror
-                                <input
-                                    value="{{ auth()->check() && auth()->user()->roles != 2 ? auth()->user()->phone : old('soDienThoai') }}"
-                                    title="(Gồm các ký tự là số, có bắt đầu là số 0, tối đa 9 chữ số - không bao gồm ký tự đầu là 0)"
-                                    name="soDienThoai" pattern="^[0]\d{9}$" type="text" required
-                                    {{ auth()->check() && auth()->user()->roles != 2 ? 'disabled' : '' }}>
-                            </div>
-                            <div class="form-group">
-                                <label class="mb-0">Địa chỉ <span class="required">*</span></label>
-                                @error('diaChi')
-                                    <span style="color: red;font-size:10px">{{ $message }}</span>
-                                @enderror
-                                <input
-                                    value="{{ auth()->check() && auth()->user()->roles != 2 ? auth()->user()->address : old('diaChi') }}"
-                                    title="(Gồm các ký tự là chữ thường, in hoa, số hoặc các ký tự như ,.-/ và tối đa 255 ký tự)"
-                                    name="diaChi"
-                                    pattern="[a-zỳọáầảấờễàạằệếýộậốũứĩõúữịỗìềểẩớặòùồợãụủíỹắẫựỉỏừỷởóéửỵẳẹèẽổẵẻỡơôưăêâđA-ZỲỌÁẦẢẤỜỄÀẠẰỆẾÝỘẬỐŨỨĨÕÚỮỊỖÌỀỂẨỚẶÒÙỒỢÃỤỦÍỸẮẪỰỈỎỪỶỞÓÉỬỴẲẸÈẼỔẴẺỠƠÔƯĂÊÂĐ0-9 -/,.]{3,255}"
-                                    type="text" required
-                                    {{ auth()->check() && auth()->user()->roles != 2 ? 'disabled' : '' }}>
-                            </div>
-                            @if (auth()->check() && auth()->user()->roles != 2)
-                                <input
-                                    title="(Gồm các ký tự là chữ thường hoặc in hoa, có dấu hoặc không dấu, tối đa 50 ký tự)"
-                                    name="hoTen"
-                                    value="{{ auth()->check() && auth()->user()->roles != 2 ? auth()->user()->name_users : old('hoTen') }}"
-                                    pattern="[a-zỳọáầảấờễàạằệếýộậốũứĩõúữịỗìềểẩớặòùồợãụủíỹắẫựỉỏừỷởóéửỵẳẹèẽổẵẻỡơôưăêâđA-ZỲỌÁẦẢẤỜỄÀẠẰỆẾÝỘẬỐŨỨĨÕÚỮỊỖÌỀỂẨỚẶÒÙỒỢÃỤỦÍỸẮẪỰỈỎỪỶỞÓÉỬỴẲẸÈẼỔẴẺỠƠÔƯĂÊÂĐ ]{3,50}"
-                                    type="text" required hidden>
-                                <input
-                                    value="{{ auth()->check() && auth()->user()->roles != 2 ? auth()->user()->phone : old('soDienThoai') }}"
-                                    title="(Gồm các ký tự là số, có bắt đầu là số 0, tối đa 9 chữ số - không bao gồm ký tự đầu là 0)"
-                                    name="soDienThoai" pattern="^[0]\d{9}$" type="text" required hidden>
-                                <input
-                                    value="{{ auth()->check() && auth()->user()->roles != 2 ? auth()->user()->address : old('diaChi') }}"
-                                    title="(Gồm các ký tự là chữ thường, in hoa, số hoặc các ký tự như ,.-/ và tối đa 255 ký tự)"
-                                    name="diaChi"
-                                    pattern="[a-zỳọáầảấờễàạằệếýộậốũứĩõúữịỗìềểẩớặòùồợãụủíỹắẫựỉỏừỷởóéửỵẳẹèẽổẵẻỡơôưăêâđA-ZỲỌÁẦẢẤỜỄÀẠẰỆẾÝỘẬỐŨỨĨÕÚỮỊỖÌỀỂẨỚẶÒÙỒỢÃỤỦÍỸẮẪỰỈỎỪỶỞÓÉỬỴẲẸÈẼỔẴẺỠƠÔƯĂÊÂĐ0-9 -/,.]{3,255}"
-                                    type="text" required hidden>
+                            @csrf
+                            @if (!auth()->check())
+                                <div class="form-group">
+                                    <label class="mb-0">Họ tên <span class="required">*</span></label>
+                                    @error('hoTen')
+                                        <span style="color: red;font-size:10px">{{ $message }}</span>
+                                    @enderror
+                                    <input name="hoTen" value="{{ old('hoTen') }}" type="text" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="mb-0">SĐT <span class="required">*</span></label>
+                                    @error('soDienThoai')
+                                        <span style="color: red;font-size:10px">{{ $message }}</span>
+                                    @enderror
+                                    <input name="soDienThoai" value="{{ old('soDienThoai') }}" type="text" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="mb-0">Địa chỉ <span class="required">*</span></label>
+                                    @error('diaChi')
+                                        <span style="color: red;font-size:10px">{{ $message }}</span>
+                                    @enderror
+                                    <input name="diaChi" value="{{ old('diaChi') }}" type="text" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="mb-0">Email <span class="required">*</span></label>
+                                    @error('email')
+                                        <span style="color: red;font-size:10px">{{ $message }}</span>
+                                    @enderror
+                                    <input name="email" value="{{ old('email') }}" type="email" required>
+                                </div>
+                            @else
+                                <div class="form-group">
+                                    <label>Họ tên</label>
+                                    <input type="text" value="{{ auth()->user()->name_users }}" disabled
+                                        class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>SĐT</label>
+                                    <input type="text" value="{{ auth()->user()->phone }}" disabled
+                                        class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Địa chỉ</label>
+                                    <input type="text" value="{{ auth()->user()->address }}" disabled
+                                        class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" value="{{ auth()->user()->email }}" disabled
+                                        class="form-control">
+                                </div>
                             @endif
                             <div class="form-group mb-20">
                                 <label class="mb-0">Lời nhắn <span class="required">*</span></label>
@@ -104,13 +101,12 @@
                                     <span style="color: red;font-size:10px">{{ $message }}</span>
                                 @enderror
                                 <textarea name="noiDung" id="checkout-mess" cols="30" rows="10" required
-                                    placeholder="VD: Tôi cần tư vấn mua laptop qua số điện thoại,...">{{ old('noiDung') != null ? old('noiDung') : '' }}</textarea>
+                                    placeholder="VD: Tôi cần tư vấn mua laptop qua số điện thoại,...">{{ old('noiDung') }}</textarea>
                             </div>
                             <div class="form-group">
                                 <button type="submit" value="gửi lời nhắn" id="guiLoiNhan" class="li-btn-3" name="thaoTac"
                                     style="font-weight:400;float: right;">Gửi</button>
                             </div>
-                            @csrf
                             <div style="clear: both;"></div>
                         </form>
                     </div>

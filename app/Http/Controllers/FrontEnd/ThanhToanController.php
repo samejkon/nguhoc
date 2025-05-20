@@ -369,28 +369,26 @@ class ThanhToanController extends Controller
                 if (!empty($ctgh['promotional_price'])) {
                     $donGia = $ctgh['promotional_price'];
                 }
-                if (!empty($ctgh['gift'])) { // xem chi tiet gio hang san pham do co qua tang khong neu co qua tang xuat them chi tiet phieu xuat 0 dong
+                if (!empty($ctgh['gift'])) {
                     foreach ($ctgh['gift'] as $thongTinSanPham) {
                         $dataChiTietPhieuXuat = [
-                            NULL, //machitietphieuxuat  tu dong
                             $thongTinPhieuXuat->id_invoice,
                             $thongTinSanPham->id_products,
                             $thongTinSanPham->guarantee,
-                            $ctgh['soluongmua'], //so luong qua tang theo so luong mua cua san pham
-                            0 //don gia qua tang la 0 dong
+                            $ctgh['soluongmua'],
+                            0
                         ];
-                        $this->chiTietPhieuXuat->themChiTietPhieuXuat($dataChiTietPhieuXuat); //them chi tiet phieu xuat vao database
+                        $this->chiTietPhieuXuat->themChiTietPhieuXuat($dataChiTietPhieuXuat);
                     }
                 }
                 $dataChiTietPhieuXuat = [
-                    NULL, //machitietphieuxuat  tu dong
                     $thongTinPhieuXuat->id_invoice,
                     $ctgh['id_products'],
                     $ctgh['guarantee'],
                     $ctgh['soluongmua'],
                     $donGia
                 ];
-                $this->chiTietPhieuXuat->themChiTietPhieuXuat($dataChiTietPhieuXuat); //them chi tiet phieu xuat vao database
+                $this->chiTietPhieuXuat->themChiTietPhieuXuat($dataChiTietPhieuXuat);
             }
             if (session('coupon')) {
                 $coupon = session('coupon');
